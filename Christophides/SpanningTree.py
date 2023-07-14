@@ -13,13 +13,13 @@ class SpanningTree:
 
     def __init__(self, graph):
         self.sourceGraph = graph
-        for i in range(1, len(graph.vertexList) + 1):
+        for i in range(1, self.sourceGraph.countVertex() + 1):
             self.vertexList.append(Vertex(i, []))
 
     def build(self):
         self.prima_cicle()
         self.addReverseEdges()
-        sorted(self.vertexList)
+        self.vertexList = sorted(self.vertexList)
 
     def prima_cicle(self):
         vertex = self.sourceGraph.vertexList[0]
@@ -28,8 +28,10 @@ class SpanningTree:
         while len(self.vertexesForAlgPrima) < self.sourceGraph.countVertex():
             vertexFrom, minEdge = self.findMinEdgeAndNextVertex()
 
-            self.vertexList.append(Vertex(vertexFrom.numberVertex, [minEdge]))
+            self.vertexList[vertexFrom.numberVertex - 1].appendEdge(minEdge)
+
             self.vertexesForAlgPrima.append(self.sourceGraph.vertexList[minEdge.vertex - 1])
+
 
     def prima(self, index=0, edge=None):
         vertex: Vertex = self.sourceGraph.vertexList[index]
@@ -65,13 +67,9 @@ class SpanningTree:
             flag = False
             vertex = self.vertexesForAlgPrima[i]
             for edge in vertex.edgeList:
-                if edge <= minEdge and Vertex(edge.vertex) not in self.vertexesForAlgPrima:
+                if edge < minEdge and Vertex(edge.vertex) not in self.vertexesForAlgPrima:
                     vertexFrom = vertex
                     minEdge = edge
-                    flag = True
-                    break
-            if flag:
-                break
 
         return [vertexFrom, minEdge]
 
