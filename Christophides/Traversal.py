@@ -21,6 +21,8 @@ class Traversal:
     def build(self):
         self.findEulerPath()
         self.findTraversal()
+        self.vertexList.clear()
+        self.findEulerPath()
 
 
     def findEulerPath(self):
@@ -62,11 +64,12 @@ class Traversal:
     def deleteRepeatVertex(self, vertex):
         firstVertex = self.graph.vertexList[0]
         for edge in vertex.edgeList:
-            if Vertex(edge.vertex) == self.multiGraph.oddVertex:
-                firstVertex = self.graph.vertexList[self.multiGraph.oddVertex.numberVertex - 1]
-                break
-            else:
-                firstVertex = self.graph.vertexList[edge.vertex - 1]
+            if self.impossible(vertex, self.graph.vertexList[edge.vertex - 1]):
+                if Vertex(edge.vertex) == self.multiGraph.oddVertex:
+                    firstVertex = self.graph.vertexList[self.multiGraph.oddVertex.numberVertex - 1]
+                    break
+                else:
+                    firstVertex = self.graph.vertexList[edge.vertex - 1]
 
         secondVertex = None
         deletingEdge = None
@@ -89,3 +92,9 @@ class Traversal:
 
         reversedEdge = Vertex.Edge(secondVertex.numberVertex, addingEdge.weight)
         self.multiGraph.vertexList[firstVertex.numberVertex - 1].appendEdge(reversedEdge)
+
+    def impossible(self, vertex, secondVertex):
+        for edge in secondVertex.edgeList:
+            if vertex.existsEdgeToVertex(edge.vertex):
+                return True
+        return False
